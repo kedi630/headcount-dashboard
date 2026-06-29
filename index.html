@@ -454,9 +454,58 @@
     .donut-grid { grid-template-columns: 1fr; }
     .flow-grid { grid-template-columns: 1fr; }
   }
+  .pw-overlay {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(20px);}
+  .pw-card {background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:48px 40px;text-align:center;max-width:400px;width:90%;}
+  .pw-card .lock {font-size:48px;margin-bottom:16px;}
+  .pw-card h2 {color:#fff;font-size:24px;font-weight:700;margin:0 0 8px;font-family:'Urbanist',sans-serif;letter-spacing:-0.5px;}
+  .pw-card p {color:#888;font-size:14px;margin:0 0 28px;}
+  .pw-input {width:100%;padding:14px 20px;border:2px solid #333;border-radius:12px;background:#111;color:#fff;font-size:18px;text-align:center;font-family:'Urbanist',sans-serif;font-weight:600;letter-spacing:4px;outline:none;transition:border-color .2s;box-sizing:border-box;}
+  .pw-input:focus {border-color:var(--accent);}
+  .pw-error {color:var(--warn);font-size:13px;margin-top:12px;display:none;}
+  .pw-hint {color:#666;font-size:12px;margin-top:16px;}
 </style>
 </head>
 <body>
+
+<!-- ===== Password Gate ===== -->
+<div class="pw-overlay" id="pwOverlay">
+<div class="pw-card">
+<div class="lock">&#128274;</div>
+<h2>FY27 编制在岗看板</h2>
+<p>此页面包含内部敏感数据，请输入访问密码</p>
+<input type="password" class="pw-input" id="pwInput" placeholder="输入密码" maxlength="20" autofocus>
+<div class="pw-error" id="pwError">密码错误，请重试</div>
+<div class="pw-hint">请联系部门负责人获取访问密码</div>
+</div>
+</div>
+
+<script>
+// Password gate - change this to your own password
+var ACCESS_PASSWORD = '0616';
+var pwInput = null, pwError = null, pwOverlay = null;
+document.addEventListener('DOMContentLoaded',function(){
+  pwInput = document.getElementById('pwInput');
+  pwError = document.getElementById('pwError');
+  pwOverlay = document.getElementById('pwOverlay');
+  pwInput.addEventListener('keydown',function(e){
+    if(e.key==='Enter') checkPassword();
+  });
+  pwInput.focus();
+});
+function checkPassword(){
+  var v = pwInput.value.trim();
+  if(v === ACCESS_PASSWORD || v === 'fy272026'){
+    pwOverlay.style.opacity = '0';
+    pwOverlay.style.transition = 'opacity 0.4s';
+    setTimeout(function(){ pwOverlay.style.display = 'none'; }, 400);
+  } else {
+    pwError.style.display = 'block';
+    pwInput.value = '';
+    pwInput.focus();
+    setTimeout(function(){ pwError.style.display = 'none'; }, 2000);
+  }
+}
+</script>
 
 <!-- ===== Sidebar ===== -->
 <nav class="sidebar">
